@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 public class DesignDecor {
 
     public static final String MOD_ID = "design_decor";
-    public static final String NAME = "Create: Design n' Decor";
+    public static final String NAME = "Create: Design n' Decor - Pure MIT Edition";
 
     public static final CreateRegistrate REGISTRATE = CreateRegistrate
             .create(DesignDecor.MOD_ID)
@@ -52,9 +52,6 @@ public class DesignDecor {
 
         MinecraftForge.EVENT_BUS.register(this);
     }
-
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) { LOGGER.info(":3"); }
 
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);

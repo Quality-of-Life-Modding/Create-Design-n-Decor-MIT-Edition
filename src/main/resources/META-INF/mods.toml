@@ -8,17 +8,21 @@ license="MIT"
 
 modId="design_decor"
 
-version="0.4.1b"
+version="0.4.1c"
 
-displayName="Create: Design n' Decor"
+displayName="Create: Design n' Decor - Pure MIT Edition"
 
 logoFile="logo.png"
 
 
-authors="DrMangoTea, Milky, Luna, Pepa, Spydnel"
+authors="DrMangoTea, Milky, Luna, Pepa, Spydnel, Emplexx, QoL Team"
 
 description='''
-dave's building extended but way better :3
+Create: Design n' Decor - MIT Edition
+This is a fork of the original Design n' Decor mod, from before the liscence was changed to ARR for the assets and MIT for the code.
+Note: This mod is not affiliated with the original Design n' Decor mod or its developers.
+Design n' Decor is a mod that adds a variety of decorative blocks and items to the game, enhancing the building experience in Minecraft. It is designed to work seamlessly with the Create mod, providing additional design options for players who enjoy creating intricate structures and environments.
+See https://github.com/Quality-of-Life-Modding/Create-Design-n-Decor-MIT-Edition for more information.
 '''
 
 [[dependencies.design_decor]]
@@ -42,6 +46,6 @@ side="BOTH"
     modId="minecraft"
     mandatory=true
 
-    versionRange="[1.20,)"
+    versionRange="[1.20.1]"
     ordering="NONE"
     side="BOTH"
