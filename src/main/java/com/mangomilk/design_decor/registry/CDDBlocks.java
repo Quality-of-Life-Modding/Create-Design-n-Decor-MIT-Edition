@@ -2262,7 +2262,7 @@ public class CDDBlocks {
                 .recipe((c, p) -> p.stonecutting(DataIngredient.tag(AllTags.forgeItemTag("ingots/iron")), BB, c::get, 4))
 
                 .tag(BlockTags.NEEDS_STONE_TOOL)
-                .transform(tagBlockAndItem(name))
+                .transform(tagBlockAndItem(AllTags.forgeBlockTag(name), AllTags.forgeItemTag(name)))
                 .build()
                 .lang(nameUpperCase)
                 .register();
