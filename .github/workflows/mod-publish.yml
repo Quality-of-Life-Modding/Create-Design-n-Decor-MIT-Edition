@@ -53,10 +53,10 @@ jobs:
           fi
           echo "TAG=$TAG" >> $GITHUB_ENV
 
-      - name: Set version in gradle.properties
+      #- name: Set version in gradle.properties
         # replaces the mod_version property in gradle.properties with the extracted TAG version
-        run: |
-          sed -i "s/^mod_version=.*/mod_version=${{ env.TAG }}-${{ env.MOD_LOADER }}/" gradle.properties
+        #run: |
+        #  sed -i "s/^mod_version=.*/mod_version=${{ env.TAG }}-${{ env.MOD_LOADER }}/" gradle.properties
 
       - name: Build Release
         run: ./gradlew build
