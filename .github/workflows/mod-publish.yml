@@ -13,8 +13,8 @@ env:
   JAVA_VERSION: 17
   # use only single mod loader, it is appended to the version
   MOD_LOADER: forge
-  GAME_VERSIONS: |
-    [1.20.1]
+  # Filled from gradle.properties in the build job
+  GAME_VERSIONS: ""
   GAME_VERSION_FILTER: releases
   VERSION_TYPE: release
   PRIMARY_FILE_GLOB: "*.jar"
@@ -28,7 +28,9 @@ jobs:
     permissions:
       contents: write
     outputs:
-      tag_version: ${{ env.TAG }}
+      mod_version: ${{ steps.release_meta.outputs.mod_version }}
+      mc_version: ${{ steps.release_meta.outputs.mc_version }}
+      game_versions: ${{ steps.release_meta.outputs.game_versions }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -43,20 +45,42 @@ jobs:
       - name: Set execution permissions for Gradle wrapper
         run: chmod +x gradlew
 
-      - name: Extract and process tag version
-        # Resolves the TAG from the GitHub release and removes a leading 'v' if present (v1.0.0 -> 1.0.0)
-        id: extract_tag
+      - name: Read release metadata from gradle.properties
+        id: release_meta
+        shell: bash
         run: |
-          TAG=${GITHUB_REF#refs/tags/}
-          if [[ "$TAG" == v* ]]; then
-            TAG=${TAG:1}
-          fi
-          echo "TAG=$TAG" >> $GITHUB_ENV
+          mod_version=$(grep -E '^mod_version\s*=' gradle.properties | head -n1 | cut -d'=' -f2- | xargs)
+          minecraft_version=$(grep -E '^(mc_version|minecraft_version)\s*=' gradle.properties | head -n1 | cut -d'=' -f2- | xargs)
 
-      #- name: Set version in gradle.properties
-        # replaces the mod_version property in gradle.properties with the extracted TAG version
-        #run: |
-        #  sed -i "s/^mod_version=.*/mod_version=${{ env.TAG }}-${{ env.MOD_LOADER }}/" gradle.properties
+          if [[ -z "$mod_version" ]]; then
+            echo "ERROR: mod_version is missing from gradle.properties" >&2
+            exit 1
+          fi
+
+          if [[ -z "$minecraft_version" ]]; then
+            echo "ERROR: mc_version/minecraft_version is missing from gradle.properties" >&2
+            exit 1
+          fi
+
+          echo "MOD_VERSION=$mod_version" >> "$GITHUB_ENV"
+          echo "MC_VERSION=$minecraft_version" >> "$GITHUB_ENV"
+          echo "GAME_VERSIONS=[$minecraft_version]" >> "$GITHUB_ENV"
+
+          echo "mod_version=$mod_version" >> "$GITHUB_OUTPUT"
+          echo "mc_version=$minecraft_version" >> "$GITHUB_OUTPUT"
+          echo "game_versions=[$minecraft_version]" >> "$GITHUB_OUTPUT"
+
+      - name: Validate release tag matches mod_version
+        if: github.event_name == 'release'
+        shell: bash
+        run: |
+          tag=${GITHUB_REF#refs/tags/}
+          tag=${tag#v}
+
+          if [[ "$tag" != "$MOD_VERSION" ]]; then
+            echo "ERROR: Release tag '$tag' does not match mod_version '$MOD_VERSION' from gradle.properties" >&2
+            exit 1
+          fi
 
       - name: Build Release
         run: ./gradlew build
@@ -89,6 +113,6 @@ jobs:
           files: artifacts/${{ env.PRIMARY_FILE_GLOB }}
           version-type: ${{ env.VERSION_TYPE }}
           loaders: ${{ env.MOD_LOADER }}
-          game-versions: ${{ env.GAME_VERSIONS }}
+          game-versions: ${{ needs.build.outputs.game_versions }}
           game-version-filter: ${{ env.GAME_VERSION_FILTER }}
           java: ${{ env.JAVA_VERSION }}

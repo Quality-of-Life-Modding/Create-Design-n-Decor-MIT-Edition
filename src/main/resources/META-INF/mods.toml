@@ -8,7 +8,7 @@ license="MIT"
 
 modId="design_decor"
 
-version="0.4.1d"
+version="${mod_version}"
 
 displayName="Create: Design n' Decor - Pure MIT Edition"
 
