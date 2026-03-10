@@ -1,4 +1,4 @@
-name: Automatically build to and publish to HitHub.
+name: Automatically build to and publish to GitHub.
 # This action is triggered when a GitHub release is created/published
 # The release title is used as version name
 # The release tag is used as the version number
