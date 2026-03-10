@@ -1,4 +1,4 @@
-name: Automatically publish to Modrinth and CurseForge
+name: Automatically build to and publish to HitHub.
 # This action is triggered when a GitHub release is created/published
 # The release title is used as version name
 # The release tag is used as the version number
