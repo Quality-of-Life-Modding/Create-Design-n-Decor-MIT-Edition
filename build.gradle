@@ -20,7 +20,19 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '0.4.1c-1.20.1'
+def requiredProperty = { String key ->
+    def value = project.findProperty(key)?.toString()?.trim()
+    if (!value) {
+        throw new GradleException("Missing required Gradle property '${key}'. Define it in gradle.properties for local builds and CI.")
+    }
+    return value
+}
+
+def modVersion = requiredProperty('mod_version')
+def minecraftVersion = requiredProperty('minecraft_version')
+
+// Artifact version rule: <mod_version>-<minecraft_version>
+version = "${modVersion}-${minecraftVersion}"
 group = 'com.mangomilk.design_decor'
 archivesBaseName = 'design_decor'
 
