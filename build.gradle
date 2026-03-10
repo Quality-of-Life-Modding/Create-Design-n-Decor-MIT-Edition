@@ -203,6 +203,19 @@ dependencies {
     testAnnotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 }
 
+
+processResources {
+    inputs.property 'mod_version', modVersion
+    inputs.property 'project_version', project.version
+
+    filesMatching('META-INF/mods.toml') {
+        expand(
+                mod_version: modVersion,
+                project_version: project.version
+        )
+    }
+}
+
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
